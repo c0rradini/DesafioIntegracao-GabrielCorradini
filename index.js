@@ -22,9 +22,6 @@ app.get('/sync', async (req, res) => {
 
     const range = 'A:E'
 
-    let cadastrados = []
-    let naoCadastrados = []
-
     const sheetData = {
         auth, spreadsheetId, range
     }
@@ -32,40 +29,36 @@ app.get('/sync', async (req, res) => {
     const getSheetData = await googleSheet.spreadsheets.values.get(sheetData).then(function (result) {
 
         result.data.values.forEach(async function (item) {
-            //console.log(item)
+
+            const COL_company = 0
+            const COL_firstname = 1
+            const COL_email = 2
+            const COL_phone = 3
+            const COL_website = 4
 
             let properties = {
-                "company": item[0], "firstname": item[1], "email": item[2], "phone": item[3], "website": item[4]
+                "company": item[COL_company],
+                "firstname": item[COL_firstname],
+                "email": item[COL_email],
+                "phone": item[COL_phone],
+                "website": item[COL_website]
             }
-            // console.log(properties)
 
-            // Pegar item[4] parseURL dps de www.
-            // Pegar item[2] parse dps do @+1 e comparar com o parseURL do item[4]
-            // se for igual, cadastra, se não, erro.
-
-            const email_hub = item[2]
+            const email_hub = item[COL_email]
             const email_hut_whost = email_hub.substring(email_hub.indexOf('@') + 1)
-            //console.log(email_hut_whost)
 
-            const website_hub = item[4]
+            const website_hub = item[COL_website]
             const website_hub_whost = website_hub.substring(website_hub.indexOf('') + 4)
-            //console.log(website_hub_whost)
 
             if (email_hut_whost === website_hub_whost) {
 
                 try {
                     const apiResponse = await hubspotClient.crm.contacts.basicApi.create({properties});
-                    //res.send(apiResponse.body)
-                    console.log(item[1] + " Cadastrado.")
-                    //cadastrados.push(item[1])
+                    console.log(item[COL_company] + " Cadastrado.")
 
                 } catch (e) {
-                    console.log(item[1] + " Já cadastrado.")
-                    // naoCadastrados.push(item[1])
-                    // res.send(e.body)
-                    // e.message === 'HTTP request failed'
-                    //     ? console.error(JSON.stringify(e.response, null, 2))
-                    //     : console.error(e)
+                    console.log(item[COL_company] + " Já cadastrado.")
+
                 }
 
             } else {
@@ -78,22 +71,6 @@ app.get('/sync', async (req, res) => {
     res.send("Sincronizado!")
 
 })
-
-
-// const BatchInputSimplePublicObjectInput = {
-//     inputs: mapArray
-// };
-
-//  try {
-//      const apiResponse = await hubspotClient.crm.contacts.batchApi.create(BatchInputSimplePublicObjectInput);
-//      res.send(apiResponse.body);
-//  } catch (e) {
-//      res.send(e.body);
-//
-//      e.message === 'HTTP request failed'
-//          ? console.error(JSON.stringify(e.response, null, 2))
-//          : console.error(e)
-// }
 
 app.listen(process.env.PORT)
 
