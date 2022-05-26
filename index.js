@@ -56,7 +56,10 @@ app.get('/sync', async (req, res) => {
 
     })
 
+    res.send("Sincronizado!")
+
 })
+
 
 // const BatchInputSimplePublicObjectInput = {
 //     inputs: mapArray
