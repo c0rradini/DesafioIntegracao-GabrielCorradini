@@ -1,8 +1,8 @@
-#DesafioIntegracao-GabrielCorradini
+# DesafioIntegracao-GabrielCorradini
 
 > Desafio de integrar uma planilha do Google com a plataforma Hubspot.
 
-##Pré-requisitos
+## Pré-requisitos
 
 - NodeJS instalado globalmente na versão mais recente.
 - Express como dependencia.
@@ -13,10 +13,12 @@
 Antes de começar, verifique se você atendeu aos seguintes requisitos:
 * Você instalou a versão mais recente do NodeJS.
 
-##Para instalar e utilizar o projeto, siga estas etapas:
+## Para instalar e utilizar o projeto, siga estas etapas:
 
 - Clone do projeto em uma pasta.
 - Renomear o arquivo '.env.example' para '.env'.
+- Baixe o arquivo de de credenciais gerado pelo Google API.
+  - Renomeie o para 'credentials.json' e cole na pasta raiz do projeto.
 - Popular com as credenciais, sendo elas, a primeira: 
   - Chave API do HubSpot.
   - Seed da planilha do Google.
@@ -27,6 +29,6 @@ Antes de começar, verifique se você atendeu aos seguintes requisitos:
   - C: E-mail institucional.
   - D: Telefone.
   - E: Site institucional.
-- Para aplicar os cadastros, use: 'npm start' no terminal na pasta que foi clonado o projeto.
+- Para aplicar os cadastros, use: 'npm install' e após a conclusão do passo anterior, use 'npm start' no terminal na pasta que foi clonado o projeto.
   - Para iniciar em modo de desenvolvimento, utilize: 'npm run dev'.
 - Para integrar a aplicação, acesse o endpoint '/sync' com a porta informada no arquivo '.env'.
