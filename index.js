@@ -10,7 +10,6 @@ const url = require('url');
 app.get('/sync', async (req, res) => {
 
     const hubspotClient = new hubspot.Client({apiKey: process.env.API_HUBSPOT})
-
     const auth = new google.auth.GoogleAuth({
         keyFile: 'credentials.json',
         scopes: 'https://www.googleapis.com/auth/spreadsheets'
@@ -19,9 +18,7 @@ app.get('/sync', async (req, res) => {
     const client = await auth.getClient()
     const googleSheet = google.sheets({version: 'v4', auth: client})
     const spreadSheetId = process.env.ID_SHEETS
-
     const range = 'A:E'
-
     const sheetData = {
         auth, spreadSheetId, range
     }
@@ -29,42 +26,38 @@ app.get('/sync', async (req, res) => {
     const getSheetData = await googleSheet.spreadsheets.values.get(sheetData).then(function (columnData) {
 
         columnData.data.values.forEach(async function (item) {
-
-            const COL_company = 0
-            const COL_firstname = 1
-            const COL_email = 2
-            const COL_phone = 3
-            const COL_website = 4
+            
+            const companyCol = 0
+            const nameCol = 1
+            const emailCol = 2
+            const phoneCol = 3
+            const websiteCol = 4
 
             let properties = {
-                "company": item[COL_company],
-                "firstname": item[COL_firstname],
-                "email": item[COL_email],
-                "phone": item[COL_phone],
-                "website": item[COL_website]
+                "company": item[companyCol],
+                "firstname": item[nameCol],
+                "email": item[emailCol],
+                "phone": item[phoneCol],
+                "website": item[websiteCol]
             }
 
-            const email_hub = item[COL_email]
-            const email_hut_whost = email_hub.substring(email_hub.indexOf('@') + 1)
+            const domainEmail = email_hub.substring(emailCol.indexOf('@') + 1)
+            const domainWebsite = website_hub.substring(websiteCol.indexOf('') + 4)
 
-            const website_hub = item[COL_website]
-            const website_hub_whost = website_hub.substring(website_hub.indexOf('') + 4)
+            //const isEmailCorporacao = domainEmail === domainWebsite
+            //if (isEmailCorporacao) {
 
-            //const isEmailCorporacao = 
-
-            if (email_hut_whost === website_hub_whost) {
-
+            if (domainEmail === domainWebsite) {
                 try {
-                    const apiResponse = await hubspotClient.crm.contacts.basicApi.create({properties});
-                    console.log(item[COL_company] + " Cadastrado.")
+                    const apiResponse = await hubspotClient.crm.contacts.basicApi.create({ properties });
+                    console.log(item[companyCol] + " Cadastrado.")
                 } catch (e) {
-                    console.log(item[COL_company] + " Já cadastrado.")
+                    console.log(item[companyCol] + " Já cadastrado.")
                 }
             } else {
-                console.log(item[COL_email] + " Não foi possível cadastrar pois o e-mail não é da sua corporação.")
+                console.log(item[emailCol] + " Não foi possível cadastrar pois o e-mail não é da sua corporação.")
             }
         })
-
     })
     res.send("Sincronizado!")
 })
