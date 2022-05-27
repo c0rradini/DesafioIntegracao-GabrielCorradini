@@ -7,4 +7,3 @@ describe("Teste para sincronização.", () => {
         expect(response.statusCode).toBe(200);
     });
 });
-

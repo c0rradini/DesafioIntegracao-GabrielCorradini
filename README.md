@@ -17,8 +17,6 @@ Antes de começar, verifique se você atendeu aos seguintes requisitos:
 
 - Clone do projeto em uma pasta.
 - Renomear o arquivo '.env.example' para '.env'.
-- Baixe o arquivo de de credenciais gerado pelo Google API.
-  - Renomeie o para 'credentials.json' e cole na pasta raiz do projeto.
 - Popular com as credenciais, sendo elas, a primeira: 
   - Chave API do HubSpot.
   - Seed da planilha do Google.

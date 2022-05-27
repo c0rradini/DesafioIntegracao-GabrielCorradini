@@ -1,13 +1,10 @@
 require('dotenv').config()
-
-
 const express = require('express')
 const app = express()
-
 const {google} = require('googleapis')
 const sheets = google.sheets('v4');
 const hubspot = require('@hubspot/api-client')
-
+app.listen(process.env.PORT)
 
 app.get('/sync', async (req, res) => {
 
@@ -60,13 +57,9 @@ app.get('/sync', async (req, res) => {
                 }
             })
         })
-
         res.send("Sincronizado!")
-
     } catch (e) {
         res.status(400).send(e)
     }
-
 })
-
 module.exports = app
