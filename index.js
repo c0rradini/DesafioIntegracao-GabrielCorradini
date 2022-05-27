@@ -1,11 +1,11 @@
 require('dotenv').config()
+
 const express = require('express')
 const app = express()
 const {google} = require('googleapis')
 const sheets = google.sheets('v4');
 const hubspot = require('@hubspot/api-client')
 const url = require('url');
-
 
 app.get('/sync', async (req, res) => {
 
@@ -16,19 +16,19 @@ app.get('/sync', async (req, res) => {
         scopes: 'https://www.googleapis.com/auth/spreadsheets'
     })
 
-    const client1 = await auth.getClient()
-    const googleSheet = google.sheets({version: 'v4', auth: client1})
-    const spreadsheetId = process.env.ID_SHEETS
+    const client = await auth.getClient()
+    const googleSheet = google.sheets({version: 'v4', auth: client})
+    const spreadSheetId = process.env.ID_SHEETS
 
     const range = 'A:E'
 
     const sheetData = {
-        auth, spreadsheetId, range
+        auth, spreadSheetId, range
     }
 
-    const getSheetData = await googleSheet.spreadsheets.values.get(sheetData).then(function (result) {
+    const getSheetData = await googleSheet.spreadsheets.values.get(sheetData).then(function (columnData) {
 
-        result.data.values.forEach(async function (item) {
+        columnData.data.values.forEach(async function (item) {
 
             const COL_company = 0
             const COL_firstname = 1
@@ -50,27 +50,22 @@ app.get('/sync', async (req, res) => {
             const website_hub = item[COL_website]
             const website_hub_whost = website_hub.substring(website_hub.indexOf('') + 4)
 
+            //const isEmailCorporacao = 
+
             if (email_hut_whost === website_hub_whost) {
 
                 try {
                     const apiResponse = await hubspotClient.crm.contacts.basicApi.create({properties});
                     console.log(item[COL_company] + " Cadastrado.")
-
                 } catch (e) {
                     console.log(item[COL_company] + " Já cadastrado.")
-
                 }
-
             } else {
-                console.log(item[2] + " Não foi possível cadastrar pois o e-mail não é da sua corporação.")
+                console.log(item[COL_email] + " Não foi possível cadastrar pois o e-mail não é da sua corporação.")
             }
         })
 
     })
-
     res.send("Sincronizado!")
-
 })
-
 app.listen(process.env.PORT)
-
