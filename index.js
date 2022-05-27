@@ -5,11 +5,10 @@ const app = express()
 const {google} = require('googleapis')
 const sheets = google.sheets('v4');
 const hubspot = require('@hubspot/api-client')
-const url = require('url');
 
 app.get('/sync', async (req, res) => {
 
-    const hubspotClient = new hubspot.Client({apiKey: process.env.API_HUBSPOT})
+    const hubspotClient = new hubspot.Client({apiKey: process.env.apiHubspot})
     const auth = new google.auth.GoogleAuth({
         keyFile: 'credentials.json',
         scopes: 'https://www.googleapis.com/auth/spreadsheets'
@@ -17,16 +16,16 @@ app.get('/sync', async (req, res) => {
 
     const client = await auth.getClient()
     const googleSheet = google.sheets({version: 'v4', auth: client})
-    const spreadSheetId = process.env.ID_SHEETS
+    const spreadsheetId = process.env.spreadsheetId
     const range = 'A:E'
     const sheetData = {
-        auth, spreadSheetId, range
+        auth, spreadsheetId, range
     }
 
     const getSheetData = await googleSheet.spreadsheets.values.get(sheetData).then(function (columnData) {
 
         columnData.data.values.forEach(async function (item) {
-            
+
             const companyCol = 0
             const nameCol = 1
             const emailCol = 2
@@ -41,11 +40,8 @@ app.get('/sync', async (req, res) => {
                 "website": item[websiteCol]
             }
 
-            const domainEmail = email_hub.substring(emailCol.indexOf('@') + 1)
-            const domainWebsite = website_hub.substring(websiteCol.indexOf('') + 4)
-
-            //const isEmailCorporacao = domainEmail === domainWebsite
-            //if (isEmailCorporacao) {
+            const domainEmail = item[emailCol].substring(item[emailCol].indexOf('@') + 1)
+            const domainWebsite = item[websiteCol].substring(item[websiteCol].indexOf('') + 4)
 
             if (domainEmail === domainWebsite) {
                 try {
