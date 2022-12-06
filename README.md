@@ -1,4 +1,4 @@
-# DesafioIntegracao-GabrielCorradini
+# API Google Sheets - HubSpot
 
 > Desafio de integrar uma planilha do Google com a plataforma Hubspot.
 
